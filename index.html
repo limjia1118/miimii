@@ -1,0 +1,1229 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>🍓 학급 공유 캘린더 🍓</title>
+
+    <!-- 구글 귀여운 폰트 (Jua & Gaegu) 로드 -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Gaegu:wght@400;700&family=Jua&display=swap" rel="stylesheet">
+
+    <style>
+        /* Scrapbook Theme Design Tokens */
+        :root {
+            --scrap-bg: #FFF5F7;
+            --scrap-pink: #FCE7F0;
+            --scrap-pink-dark: #E8A5B8;
+            --scrap-rose: #D9728D;
+            --scrap-cream: #FAF0E6;
+            --scrap-brown: #5C3D2E;
+            --scrap-brown-light: #8C6849;
+            --scrap-yellow: #FFF3CD;
+            --scrap-green: #D4EA90;
+            --scrap-blue: #BAE6FD;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: 'Jua', 'Gaegu', -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", sans-serif;
+            background-color: var(--scrap-bg);
+            background-image: radial-gradient(#F3B8C8 1.8px, transparent 1.8px);
+            background-size: 18px 18px;
+            color: var(--scrap-brown);
+            min-height: 100vh;
+            padding: 12px 10px 40px 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .font-cute {
+            font-family: 'Gaegu', 'Jua', cursive;
+            font-weight: bold;
+        }
+
+        .app-container {
+            width: 100%;
+            max-width: 960px;
+            margin: 0 auto;
+        }
+
+        .scrap-card {
+            background: #FFFFFF;
+            border: 3.5px solid var(--scrap-brown);
+            border-radius: 20px;
+            box-shadow: 4px 5px 0px var(--scrap-brown-light);
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 16px;
+        }
+
+        .gingham-pink {
+            background-color: #FFF0F4;
+            background-image: 
+                linear-gradient(90deg, rgba(232, 165, 184, 0.22) 50%, transparent 50%),
+                linear-gradient(rgba(232, 165, 184, 0.22) 50%, transparent 50%);
+            background-size: 18px 18px;
+        }
+
+        .gingham-yellow {
+            background-color: #FFFDF0;
+            background-image: 
+                linear-gradient(90deg, rgba(245, 215, 110, 0.25) 50%, transparent 50%),
+                linear-gradient(rgba(245, 215, 110, 0.25) 50%, transparent 50%);
+            background-size: 18px 18px;
+        }
+
+        .header-box {
+            padding: 16px 12px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .main-title {
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--scrap-brown);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
+        @media (min-width: 640px) {
+            .main-title {
+                font-size: 32px;
+            }
+        }
+
+        .sub-title {
+            font-size: 14px;
+            color: var(--scrap-brown-light);
+            font-weight: bold;
+        }
+
+        .dday-banner {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: #FFFFFF;
+            border: 2px solid var(--scrap-rose);
+            border-radius: 20px;
+            padding: 4px 14px;
+            box-shadow: 2px 2px 0px var(--scrap-pink-dark);
+            font-size: 13px;
+            font-weight: bold;
+            color: var(--scrap-brown);
+            margin-top: 2px;
+        }
+
+        .dday-badge {
+            background: var(--scrap-rose);
+            color: #FFFFFF;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+        }
+
+        .main-layout {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 16px;
+        }
+
+        @media (min-width: 768px) {
+            .main-layout {
+                grid-template-columns: 2fr 1fr;
+            }
+        }
+
+        .calendar-toolbar {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            margin-bottom: 12px;
+            padding-bottom: 10px;
+            border-bottom: 2px dashed var(--scrap-pink-dark);
+        }
+
+        .btn-scrap {
+            border: 2px solid var(--scrap-brown);
+            border-radius: 12px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.1s ease;
+            box-shadow: 2px 2px 0px var(--scrap-brown);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 6px 12px;
+            font-size: 12px;
+            user-select: none;
+            background-color: #FFFFFF;
+        }
+
+        .btn-scrap:active {
+            transform: translate(1px, 1px);
+            box-shadow: 1px 1px 0px var(--scrap-brown);
+        }
+
+        .btn-rose { background-color: var(--scrap-rose); color: #FFFFFF; }
+        .btn-pink { background-color: var(--scrap-pink); color: var(--scrap-brown); }
+        .btn-yellow { background-color: var(--scrap-yellow); color: var(--scrap-brown); }
+
+        .calendar-grid-container {
+            display: grid;
+            grid-template-columns: repeat(7, minmax(0, 1fr));
+            gap: 4px;
+        }
+
+        .days-header {
+            text-align: center;
+            font-weight: bold;
+            font-size: 13px;
+            margin-bottom: 6px;
+            padding: 6px 0;
+            background-color: var(--scrap-pink);
+            border-radius: 10px;
+            border: 1px solid var(--scrap-pink-dark);
+        }
+
+        .calendar-day-cell {
+            min-height: 72px;
+            background: #FFFFFF;
+            border: 1.5px solid #F0C4D0;
+            border-radius: 10px;
+            padding: 4px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            cursor: pointer;
+            transition: background-color 0.15s ease;
+        }
+
+        .calendar-day-cell:hover {
+            background-color: #FFF9FA;
+        }
+
+        @media (min-width: 640px) {
+            .calendar-day-cell {
+                min-height: 88px;
+                padding: 6px;
+            }
+        }
+
+        .calendar-day-cell.is-today {
+            border: 2.5px solid var(--scrap-rose);
+            background-color: #FFF2F5;
+            box-shadow: inset 0 0 0 1px var(--scrap-rose);
+        }
+
+        .event-item-chip {
+            border-radius: 5px;
+            padding: 2px 4px;
+            font-size: 10px;
+            font-weight: bold;
+            margin-bottom: 2px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: flex;
+            align-items: center;
+            gap: 2px;
+        }
+
+        .modal-backdrop {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: rgba(92, 61, 46, 0.5);
+            backdrop-filter: blur(2px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            padding: 16px;
+        }
+
+        .modal-backdrop.hidden {
+            display: none !important;
+        }
+
+        .modal-card {
+            background: #FFFFFF;
+            border: 3.5px solid var(--scrap-brown);
+            border-radius: 20px;
+            width: 100%;
+            max-width: 420px;
+            padding: 18px;
+            box-shadow: 5px 6px 0px var(--scrap-brown);
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px dashed var(--scrap-pink-dark);
+            padding-bottom: 8px;
+            margin-bottom: 12px;
+        }
+
+        .modal-close-btn {
+            background: var(--scrap-pink);
+            border: 2px solid var(--scrap-brown);
+            border-radius: 50%;
+            width: 28px;
+            height: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .input-field {
+            width: 100%;
+            background: var(--scrap-cream);
+            border: 2px solid var(--scrap-brown);
+            border-radius: 10px;
+            padding: 8px;
+            font-size: 12px;
+            outline: none;
+            color: var(--scrap-brown);
+            margin-top: 4px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+
+        <!-- Header Banner -->
+        <header class="scrap-card gingham-pink header-box">
+            <h1 class="main-title font-cute">
+                <span>🍓</span>
+                <span><span style="color: var(--scrap-rose);">2학기 미반</span> 공유 캘린더</span>
+                <span>🍓</span>
+            </h1>
+
+            <p class="sub-title font-cute">
+                ♡ 모여봐요 미반의 숲 ♡
+            </p>
+
+            <!-- Top D-Day Banner -->
+            <div id="topDDayBanner" class="dday-banner">
+                <span id="topDDayBadge" class="dday-badge">D-Day</span>
+                <span id="topDDayTitle">설정된 D-Day가 없습니다.</span>
+            </div>
+        </header>
+
+        <main class="main-layout">
+
+            <section class="scrap-card" style="padding: 12px;">
+                
+                <!-- Calendar Toolbar -->
+                <div class="calendar-toolbar">
+                    <div style="display: flex; align-items: center; gap: 4px;">
+                        <button id="prevMonthBtn" class="btn-scrap btn-pink" style="padding: 4px 8px;">◀</button>
+                        <h2 id="calendarTitle" class="font-cute" style="font-size: 20px; font-weight: bold; min-width: 120px; text-align: center;">
+                            2026년 9월
+                        </h2>
+                        <button id="nextMonthBtn" class="btn-scrap btn-pink" style="padding: 4px 8px;">▶</button>
+                        <button id="todayBtn" class="btn-scrap btn-yellow" style="padding: 4px 8px; font-size: 11px;">오늘</button>
+                    </div>
+
+                    <div style="display: flex; align-items: center; gap: 6px; margin-left: auto;">
+                        <select id="categoryFilter" style="background: var(--scrap-cream); border: 2px solid var(--scrap-brown); border-radius: 10px; padding: 4px 6px; font-size: 11px; font-weight: bold; color: var(--scrap-brown); outline: none;">
+                            <option value="ALL">🩷 전체 보기</option>
+                            <option value="수행평가">📑 수행평가</option>
+                            <option value="학급 일정">🏫 학급 일정</option>
+                            <option value="생일">🎂 생일</option>
+                            <option value="기타">🪽 기타</option>
+                        </select>
+
+                        <button id="addEventBtn" class="btn-scrap btn-rose" style="padding: 4px 10px;">
+                            + 일정 추가
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Days Header -->
+                <div class="calendar-grid-container days-header">
+                    <div style="color: #E53E3E;">일</div>
+                    <div>월</div>
+                    <div>화</div>
+                    <div>수</div>
+                    <div>목</div>
+                    <div>금</div>
+                    <div style="color: #3182CE;">토</div>
+                </div>
+
+                <!-- Calendar Grid -->
+                <div id="calendarGrid" class="calendar-grid-container"></div>
+
+                <!-- Category Legend -->
+                <div style="margin-top: 12px; padding-top: 8px; border-top: 2px dashed var(--scrap-pink-dark); display: flex; flex-wrap: wrap; gap: 8px; font-size: 11px; font-weight: bold; color: var(--scrap-brown-light);">
+                    <span style="display: flex; align-items: center; gap: 3px;"><span style="width: 8px; height: 8px; border-radius: 50%; background: #FFD1DC; border: 1px solid #F3AEC1; display:inline-block;"></span> 수행평가</span>
+                    <span style="display: flex; align-items: center; gap: 3px;"><span style="width: 8px; height: 8px; border-radius: 50%; background: #D4EA90; border: 1px solid #BCE061; display:inline-block;"></span> 학급 일정</span>
+                    <span style="display: flex; align-items: center; gap: 3px;"><span style="width: 8px; height: 8px; border-radius: 50%; background: #BAE6FD; border: 1px solid #7DD3FC; display:inline-block;"></span> 생일</span>
+                    <span style="display: flex; align-items: center; gap: 3px;"><span style="width: 8px; height: 8px; border-radius: 50%; background: #FFFFFF; border: 1px solid #CBD5E0; display:inline-block;"></span> 기타</span>
+                </div>
+
+            </section>
+
+            <section style="display: flex; flex-direction: column; gap: 16px;">
+                
+                <!-- Notice Board -->
+                <div class="scrap-card gingham-yellow" style="padding: 14px;">
+                    <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 2px solid var(--scrap-brown); padding-bottom: 6px; margin-bottom: 10px;">
+                        <h3 class="font-cute" style="font-size: 18px; font-weight: bold; color: var(--scrap-brown); display: flex; align-items: center; gap: 4px;">
+                            ✏️ 준비물 및 공지
+                        </h3>
+                        <span style="font-size: 10px; background: #FFFFFF; border: 1px solid var(--scrap-brown); padding: 1px 5px; border-radius: 6px; font-weight: bold; color: #D69E2E;">Notice</span>
+                    </div>
+
+                    <div id="noticeBoardList" style="display: flex; flex-direction: column; gap: 8px; max-height: 200px; overflow-y: auto;"></div>
+
+                    <button id="addMemoBtn" class="btn-scrap" style="margin-top: 10px; width: 100%; background: #FFFFFF; border: 2px dashed var(--scrap-brown); font-size: 11px;">
+                        + 준비물 / 공지사항 추가하기
+                    </button>
+                </div>
+
+                <!-- D-Day Section -->
+                <div class="scrap-card" style="padding: 14px;">
+                    <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 2px dashed var(--scrap-pink-dark); padding-bottom: 6px; margin-bottom: 10px;">
+                        <h3 class="font-cute" style="font-size: 18px; font-weight: bold; color: var(--scrap-brown); display: flex; align-items: center; gap: 4px;">
+                            📌 우리 반 D-Day
+                        </h3>
+                    </div>
+
+                    <div id="ddayList" style="display: flex; flex-direction: column; gap: 8px; max-height: 180px; overflow-y: auto;"></div>
+
+                    <button id="addDDayBtn" class="btn-scrap btn-pink" style="margin-top: 10px; width: 100%; font-size: 11px; border-style: dashed;">
+                        + 새 D-Day 추가
+                    </button>
+                </div>
+
+            </section>
+
+        </main>
+    </div>
+
+    <!-- Event Modal -->
+    <div id="eventModal" class="modal-backdrop hidden">
+        <div class="modal-card">
+            <div class="modal-header">
+                <div>
+                    <span id="modalDateBadge" style="background: var(--scrap-pink); color: var(--scrap-rose); border: 1px solid var(--scrap-rose); padding: 2px 8px; border-radius: 10px; font-size: 11px; font-weight: bold;">2026-09-12</span>
+                    <h3 class="font-cute" style="font-size: 20px; font-weight: bold; color: var(--scrap-brown); margin-top: 4px;">일정 관리 및 추가</h3>
+                </div>
+                <button id="closeModalBtn" class="modal-close-btn">✕</button>
+            </div>
+
+            <div style="margin-bottom: 12px;">
+                <h4 style="font-size: 11px; font-weight: bold; color: var(--scrap-brown-light); margin-bottom: 6px;">등록된 일정 (수정 ✏️ / 삭제 가능)</h4>
+                <div id="dayEventsList" style="display: flex; flex-direction: column; gap: 6px; max-height: 130px; overflow-y: auto; background: var(--scrap-bg); border: 1px solid var(--scrap-pink); padding: 6px; border-radius: 10px;"></div>
+            </div>
+
+            <form id="addEventForm" style="border-top: 2px dashed var(--scrap-pink-dark); padding-top: 10px; display: flex; flex-direction: column; gap: 8px;">
+                <h4 id="eventFormHeader" class="font-cute" style="font-size: 16px; font-weight: bold; color: var(--scrap-brown);">+ 새 일정 추가하기</h4>
+                
+                <div>
+                    <label style="display: block; font-size: 11px; font-weight: bold;">일정 제목 *</label>
+                    <input type="text" id="eventTitleInput" required placeholder="예: 수학 3단원 수행평가" class="input-field">
+                </div>
+
+                <div>
+                    <label style="display: block; font-size: 11px; font-weight: bold;">카테고리</label>
+                    <select id="eventCategoryInput" class="input-field">
+                        <option value="수행평가">📑 수행평가</option>
+                        <option value="학급 일정">🏫 학급 일정</option>
+                        <option value="생일">🎂 생일</option>
+                        <option value="기타">🪽 기타</option>
+                    </select>
+                </div>
+
+                <div style="display: flex; justify-content: flex-end; gap: 6px; margin-top: 4px;">
+                    <button type="button" id="cancelModalBtn" class="btn-scrap" style="background: #EDF2F7; padding: 4px 10px;">취소</button>
+                    <button type="submit" id="saveEventSubmitBtn" class="btn-scrap btn-rose" style="padding: 4px 12px;">저장하기</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Notice Memo Modal -->
+    <div id="memoModal" class="modal-backdrop hidden">
+        <div class="modal-card">
+            <div class="modal-header" style="border-color: #F5D76E;">
+                <h3 id="memoModalTitle" class="font-cute" style="font-size: 20px; font-weight: bold; color: var(--scrap-brown);">✏️ 준비물 및 공지 등록</h3>
+                <button id="closeMemoModalBtn" class="modal-close-btn" style="background: #FFFDF0;">✕</button>
+            </div>
+
+            <form id="addMemoForm" style="display: flex; flex-direction: column; gap: 10px;">
+                <div>
+                    <label style="display: block; font-size: 11px; font-weight: bold;">공지 내용 *</label>
+                    <textarea id="memoTextInput" required rows="3" placeholder="예: 내일 체육복 입고 오기!" class="input-field" style="background: #FFFDF0; resize: none;"></textarea>
+                </div>
+
+                <div style="display: flex; justify-content: flex-end; gap: 6px;">
+                    <button type="button" id="cancelMemoBtn" class="btn-scrap" style="background: #EDF2F7; padding: 4px 10px;">취소</button>
+                    <button type="submit" id="saveMemoSubmitBtn" class="btn-scrap btn-yellow" style="padding: 4px 12px;">등록하기</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- D-Day Modal -->
+    <div id="ddayModal" class="modal-backdrop hidden">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3 id="ddayModalTitle" class="font-cute" style="font-size: 20px; font-weight: bold; color: var(--scrap-brown);">📌 D-Day 추가</h3>
+                <button id="closeDDayModalBtn" class="modal-close-btn">✕</button>
+            </div>
+
+            <form id="addDDayForm" style="display: flex; flex-direction: column; gap: 10px;">
+                <div>
+                    <label style="display: block; font-size: 11px; font-weight: bold;">D-Day 제목 *</label>
+                    <input type="text" id="ddayTitleInput" required placeholder="예: 2학기 중간고사" class="input-field">
+                </div>
+
+                <div>
+                    <label style="display: block; font-size: 11px; font-weight: bold;">목표 날짜 *</label>
+                    <input type="date" id="ddayDateInput" required class="input-field">
+                </div>
+
+                <div style="display: flex; justify-content: flex-end; gap: 6px; margin-top: 4px;">
+                    <button type="button" id="cancelDDayBtn" class="btn-scrap" style="background: #EDF2F7; padding: 4px 10px;">취소</button>
+                    <button type="submit" id="saveDDaySubmitBtn" class="btn-scrap btn-rose" style="padding: 4px 12px;">저장하기</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const memoryStorage = {};
+
+        function safeGetStorage(key, defaultValue) {
+            try {
+                if (typeof window !== 'undefined' && window.localStorage) {
+                    const val = window.localStorage.getItem(key);
+                    return val !== null ? val : defaultValue;
+                }
+            } catch (e) {
+                console.warn("Storage access restricted.", e);
+            }
+            return memoryStorage[key] !== undefined ? memoryStorage[key] : defaultValue;
+        }
+
+        function safeSetStorage(key, value) {
+            try {
+                if (typeof window !== 'undefined' && window.localStorage) {
+                    window.localStorage.setItem(key, value);
+                    return;
+                }
+            } catch (e) {
+                console.warn("Storage access restricted.", e);
+            }
+            memoryStorage[key] = value;
+        }
+
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'miban-classroom-calendar';
+        let firebaseConfig = null;
+        try {
+            if (typeof __firebase_config !== 'undefined') {
+                firebaseConfig = JSON.parse(__firebase_config);
+            }
+        } catch (e) {}
+
+        let db = null;
+        let auth = null;
+        let currentUser = null;
+        let firestoreModules = {};
+
+        let currentDate = new Date();
+        let selectedDateStr = formatDateStr(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate());
+        let activeCategoryFilter = 'ALL';
+
+        let eventsData = [];
+        let memosData = [];
+        let ddaysData = [];
+
+        let editingEventId = null;
+        let editingMemoId = null;
+        let editingDDayId = null;
+
+        let calendarGrid, calendarTitle, prevMonthBtn, nextMonthBtn, todayBtn, categoryFilter;
+        let eventModal, closeModalBtn, cancelModalBtn, addEventBtn, addEventForm, dayEventsList, modalDateBadge;
+        let eventTitleInput, eventCategoryInput, eventFormHeader, saveEventSubmitBtn;
+        let noticeBoardList, addMemoBtn, memoModal, closeMemoModalBtn, cancelMemoBtn, addMemoForm, memoTextInput, memoModalTitle, saveMemoSubmitBtn;
+        let ddayList, addDDayBtn, ddayModal, closeDDayModalBtn, cancelDDayBtn, addDDayForm, ddayTitleInput, ddayDateInput, ddayModalTitle, saveDDaySubmitBtn;
+        let topDDayBadge, topDDayTitle;
+
+        function formatDateStr(year, month, day) {
+            const m = String(month + 1).padStart(2, '0');
+            const d = String(day).padStart(2, '0');
+            return `${year}-${m}-${d}`;
+        }
+
+        function calculateDDayDiff(targetDateStr) {
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            
+            const [y, m, d] = targetDateStr.split('-').map(Number);
+            const target = new Date(y, m - 1, d);
+            target.setHours(0, 0, 0, 0);
+
+            const diffTime = target - today;
+            return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        }
+
+        function getCategoryStyle(category) {
+            switch (category) {
+                case '수행평가': return { bg: '#FFD1DC', text: '#8A3B4D', border: '#F3AEC1', icon: '📑' };
+                case '학급 일정': return { bg: '#D4EA90', text: '#3A5F13', border: '#BCE061', icon: '🏫' };
+                case '생일': return { bg: '#BAE6FD', text: '#0369A1', border: '#7DD3FC', icon: '🎂' };
+                default: return { bg: '#FFFFFF', text: '#4A5568', border: '#CBD5E0', icon: '🪽' };
+            }
+        }
+
+        function initDOMElements() {
+            calendarGrid = document.getElementById('calendarGrid');
+            calendarTitle = document.getElementById('calendarTitle');
+            prevMonthBtn = document.getElementById('prevMonthBtn');
+            nextMonthBtn = document.getElementById('nextMonthBtn');
+            todayBtn = document.getElementById('todayBtn');
+            categoryFilter = document.getElementById('categoryFilter');
+            
+            eventModal = document.getElementById('eventModal');
+            closeModalBtn = document.getElementById('closeModalBtn');
+            cancelModalBtn = document.getElementById('cancelModalBtn');
+            addEventBtn = document.getElementById('addEventBtn');
+            addEventForm = document.getElementById('addEventForm');
+            dayEventsList = document.getElementById('dayEventsList');
+            modalDateBadge = document.getElementById('modalDateBadge');
+            eventTitleInput = document.getElementById('eventTitleInput');
+            eventCategoryInput = document.getElementById('eventCategoryInput');
+            eventFormHeader = document.getElementById('eventFormHeader');
+            saveEventSubmitBtn = document.getElementById('saveEventSubmitBtn');
+            
+            noticeBoardList = document.getElementById('noticeBoardList');
+            addMemoBtn = document.getElementById('addMemoBtn');
+            memoModal = document.getElementById('memoModal');
+            closeMemoModalBtn = document.getElementById('closeMemoModalBtn');
+            cancelMemoBtn = document.getElementById('cancelMemoBtn');
+            addMemoForm = document.getElementById('addMemoForm');
+            memoTextInput = document.getElementById('memoTextInput');
+            memoModalTitle = document.getElementById('memoModalTitle');
+            saveMemoSubmitBtn = document.getElementById('saveMemoSubmitBtn');
+
+            ddayList = document.getElementById('ddayList');
+            addDDayBtn = document.getElementById('addDDayBtn');
+            ddayModal = document.getElementById('ddayModal');
+            closeDDayModalBtn = document.getElementById('closeDDayModalBtn');
+            cancelDDayBtn = document.getElementById('cancelDDayBtn');
+            addDDayForm = document.getElementById('addDDayForm');
+            ddayTitleInput = document.getElementById('ddayTitleInput');
+            ddayDateInput = document.getElementById('ddayDateInput');
+            ddayModalTitle = document.getElementById('ddayModalTitle');
+            saveDDaySubmitBtn = document.getElementById('saveDDaySubmitBtn');
+
+            topDDayBadge = document.getElementById('topDDayBadge');
+            topDDayTitle = document.getElementById('topDDayTitle');
+        }
+
+        function bindEvents() {
+            if (prevMonthBtn) prevMonthBtn.onclick = () => { currentDate.setMonth(currentDate.getMonth() - 1); renderCalendar(); };
+            if (nextMonthBtn) nextMonthBtn.onclick = () => { currentDate.setMonth(currentDate.getMonth() + 1); renderCalendar(); };
+            if (todayBtn) todayBtn.onclick = () => { currentDate = new Date(); renderCalendar(); };
+            if (categoryFilter) categoryFilter.onchange = (e) => { activeCategoryFilter = e.target.value; renderCalendar(); };
+            
+            if (addEventBtn) {
+                addEventBtn.onclick = () => {
+                    const now = new Date();
+                    const todayStr = formatDateStr(now.getFullYear(), now.getMonth(), now.getDate());
+                    openEventModal(selectedDateStr || todayStr);
+                };
+            }
+            if (closeModalBtn) closeModalBtn.onclick = () => eventModal.classList.add('hidden');
+            if (cancelModalBtn) cancelModalBtn.onclick = () => eventModal.classList.add('hidden');
+
+            if (addEventForm) {
+                addEventForm.onsubmit = async (e) => {
+                    e.preventDefault();
+                    const title = eventTitleInput.value.trim();
+                    const category = eventCategoryInput.value;
+                    if (!title) return;
+
+                    if (editingEventId) {
+                        await updateEventItem(editingEventId, { title, category });
+                    } else {
+                        await addNewEvent({ date: selectedDateStr, title, category });
+                    }
+                    
+                    resetEventForm();
+                    renderDayEventsList(selectedDateStr);
+                };
+            }
+
+            if (addMemoBtn) {
+                addMemoBtn.onclick = () => {
+                    editingMemoId = null;
+                    memoModalTitle.textContent = "✏️ 준비물 및 공지 등록";
+                    saveMemoSubmitBtn.textContent = "등록하기";
+                    memoTextInput.value = '';
+                    memoModal.classList.remove('hidden');
+                };
+            }
+            if (closeMemoModalBtn) closeMemoModalBtn.onclick = () => memoModal.classList.add('hidden');
+            if (cancelMemoBtn) cancelMemoBtn.onclick = () => memoModal.classList.add('hidden');
+
+            if (addMemoForm) {
+                addMemoForm.onsubmit = async (e) => {
+                    e.preventDefault();
+                    const text = memoTextInput.value.trim();
+                    if (!text) return;
+
+                    if (editingMemoId) {
+                        await updateMemoItem(editingMemoId, text);
+                    } else {
+                        await addNewMemo(text);
+                    }
+                    memoTextInput.value = '';
+                    editingMemoId = null;
+                    memoModal.classList.add('hidden');
+                };
+            }
+
+            if (addDDayBtn) {
+                addDDayBtn.onclick = () => {
+                    editingDDayId = null;
+                    ddayModalTitle.textContent = "📌 새 D-Day 추가";
+                    saveDDaySubmitBtn.textContent = "추가하기";
+                    addDDayForm.reset();
+                    ddayModal.classList.remove('hidden');
+                };
+            }
+            if (closeDDayModalBtn) closeDDayModalBtn.onclick = () => ddayModal.classList.add('hidden');
+            if (cancelDDayBtn) cancelDDayBtn.onclick = () => ddayModal.classList.add('hidden');
+
+            if (addDDayForm) {
+                addDDayForm.onsubmit = async (e) => {
+                    e.preventDefault();
+                    const title = ddayTitleInput.value.trim();
+                    const date = ddayDateInput.value;
+                    if (!title || !date) return;
+
+                    if (editingDDayId) {
+                        await updateDDayItem(editingDDayId, title, date);
+                    } else {
+                        await addNewDDay(title, date);
+                    }
+                    addDDayForm.reset();
+                    editingDDayId = null;
+                    ddayModal.classList.add('hidden');
+                };
+            }
+        }
+
+        function loadLocalStorageData() {
+            try {
+                eventsData = JSON.parse(safeGetStorage('miban_events_v8', '[]'));
+                memosData = JSON.parse(safeGetStorage('miban_memos_v8', '[]'));
+                ddaysData = JSON.parse(safeGetStorage('miban_ddays_v8', '[]'));
+            } catch(e) {
+                eventsData = []; memosData = []; ddaysData = [];
+            }
+        }
+
+        function saveLocalStorageData() {
+            safeSetStorage('miban_events_v8', JSON.stringify(eventsData));
+            safeSetStorage('miban_memos_v8', JSON.stringify(memosData));
+            safeSetStorage('miban_ddays_v8', JSON.stringify(ddaysData));
+        }
+
+        function renderAll() {
+            renderCalendar();
+            renderMemos();
+            renderDDays();
+        }
+
+        function renderCalendar() {
+            calendarGrid = document.getElementById('calendarGrid');
+            calendarTitle = document.getElementById('calendarTitle');
+            if (!calendarGrid) return;
+
+            const year = currentDate.getFullYear();
+            const month = currentDate.getMonth();
+
+            if (calendarTitle) calendarTitle.textContent = `${year}년 ${month + 1}월`;
+            calendarGrid.innerHTML = '';
+
+            const firstDayIndex = new Date(year, month, 1).getDay();
+            const lastDate = new Date(year, month + 1, 0).getDate();
+            const prevLastDate = new Date(year, month, 0).getDate();
+
+            // Previous month fill
+            for (let i = firstDayIndex; i > 0; i--) {
+                const prevDay = prevLastDate - i + 1;
+                const cell = document.createElement('div');
+                cell.className = 'calendar-day-cell';
+                cell.style.opacity = '0.35';
+                cell.style.background = '#FFF5F7';
+                cell.innerHTML = `<span style="font-weight:bold; font-size:11px; color:#A0AEC0;">${prevDay}</span>`;
+                calendarGrid.appendChild(cell);
+            }
+
+            const now = new Date();
+            const todayStr = formatDateStr(now.getFullYear(), now.getMonth(), now.getDate());
+
+            // Current month days
+            for (let day = 1; day <= lastDate; day++) {
+                const dayDateStr = formatDateStr(year, month, day);
+                const dayOfWeek = new Date(year, month, day).getDay();
+
+                let dayEvents = (Array.isArray(eventsData) ? eventsData : []).filter(e => e && e.date === dayDateStr);
+                if (activeCategoryFilter !== 'ALL') {
+                    dayEvents = dayEvents.filter(e => e.category === activeCategoryFilter);
+                }
+
+                const isToday = (dayDateStr === todayStr);
+
+                const cell = document.createElement('div');
+                cell.className = `calendar-day-cell ${isToday ? 'is-today' : ''}`;
+
+                let dayTextColor = '#5C3D2E';
+                if (dayOfWeek === 0) dayTextColor = '#E53E3E';
+                if (dayOfWeek === 6) dayTextColor = '#3182CE';
+
+                let eventsHTML = '';
+                dayEvents.slice(0, 2).forEach(ev => {
+                    const style = getCategoryStyle(ev.category);
+                    eventsHTML += `
+                        <div class="event-item-chip" style="background:${style.bg}; color:${style.text}; border:1px solid ${style.border};">
+                            <span>${style.icon}</span>
+                            <span style="overflow:hidden; text-overflow:ellipsis;">${ev.title}</span>
+                        </div>
+                    `;
+                });
+
+                if (dayEvents.length > 2) {
+                    eventsHTML += `<div style="font-size:9px; color:#D9728D; font-weight:bold; text-align:center;">+${dayEvents.length - 2}개 더보기</div>`;
+                }
+
+                cell.innerHTML = `
+                    <div style="display:flex; align-items:center; justify-content:space-between;">
+                        <span style="font-size:12px; font-weight:bold; color:${dayTextColor}; ${isToday ? 'background:#D9728D; color:#FFF; padding:1px 5px; border-radius:10px;' : ''}">
+                            ${day}
+                        </span>
+                        ${isToday ? '<span style="font-size:9px; color:#D9728D; font-weight:bold;">오늘</span>' : ''}
+                    </div>
+                    <div style="margin-top:2px; display:flex; flex-direction:column;">${eventsHTML}</div>
+                `;
+
+                cell.onclick = () => openEventModal(dayDateStr);
+                calendarGrid.appendChild(cell);
+            }
+
+            // Next month fill
+            const totalCells = firstDayIndex + lastDate;
+            const remainingCells = (7 - (totalCells % 7)) % 7;
+            for (let i = 1; i <= remainingCells; i++) {
+                const cell = document.createElement('div');
+                cell.className = 'calendar-day-cell';
+                cell.style.opacity = '0.35';
+                cell.style.background = '#FFF5F7';
+                cell.innerHTML = `<span style="font-weight:bold; font-size:11px; color:#A0AEC0;">${i}</span>`;
+                calendarGrid.appendChild(cell);
+            }
+        }
+
+        function renderMemos() {
+            noticeBoardList = document.getElementById('noticeBoardList');
+            if (!noticeBoardList) return;
+            noticeBoardList.innerHTML = '';
+
+            const list = Array.isArray(memosData) ? memosData : [];
+            if (list.length === 0) {
+                noticeBoardList.innerHTML = `<div style="text-align:center; padding:14px; font-size:11px; color:#8C6849;">등록된 공지나 준비물이 없습니다.</div>`;
+                return;
+            }
+
+            list.forEach(memo => {
+                const item = document.createElement('div');
+                item.style.cssText = "background:#FFFFFF; padding:8px 10px; border-radius:12px; border:2px solid #F5D76E; display:flex; align-items:flex-start; justify-content:space-between; gap:6px; box-shadow:2px 2px 0px #F5D76E;";
+                item.innerHTML = `
+                    <div style="display:flex; align-items:flex-start; gap:6px; flex:1;">
+                        <span style="color:#D69E2E; font-size:12px;">⭐</span>
+                        <p style="font-size:12px; font-weight:bold; color:#5C3D2E; line-height:1.4; word-break:break-all;">${memo.text}</p>
+                    </div>
+                    <div style="display:flex; align-items:center; gap:2px;">
+                        <button class="edit-memo-btn" style="background:none; border:none; cursor:pointer; font-size:12px; padding:2px;" title="수정">✏️</button>
+                        <button class="delete-memo-btn" style="background:none; border:none; color:#A0AEC0; cursor:pointer; font-size:12px; font-weight:bold; padding:2px;" title="삭제">✕</button>
+                    </div>
+                `;
+
+                item.querySelector('.edit-memo-btn').onclick = () => openEditMemoModal(memo);
+                item.querySelector('.delete-memo-btn').onclick = () => deleteMemoItem(memo.id);
+                noticeBoardList.appendChild(item);
+            });
+        }
+
+        function renderDDays() {
+            ddayList = document.getElementById('ddayList');
+            topDDayBadge = document.getElementById('topDDayBadge');
+            topDDayTitle = document.getElementById('topDDayTitle');
+
+            if (!ddayList) return;
+            ddayList.innerHTML = '';
+
+            const list = Array.isArray(ddaysData) ? ddaysData : [];
+
+            if (list.length === 0) {
+                ddayList.innerHTML = `<p style="font-size:11px; color:#8C6849; text-align:center; padding:12px;">등록된 D-Day가 없습니다.</p>`;
+                if (topDDayBadge) topDDayBadge.textContent = 'D-Day';
+                if (topDDayTitle) topDDayTitle.textContent = '설정된 D-Day가 없습니다.';
+                return;
+            }
+
+            const sorted = [...list].map(d => {
+                const diff = calculateDDayDiff(d.date);
+                return { ...d, diff };
+            }).sort((a, b) => {
+                if (a.diff >= 0 && b.diff < 0) return -1;
+                if (a.diff < 0 && b.diff >= 0) return 1;
+                return Math.abs(a.diff) - Math.abs(b.diff);
+            });
+
+            const primary = sorted[0];
+            let badgeText = '';
+            if (primary.diff === 0) badgeText = 'D-DAY';
+            else if (primary.diff > 0) badgeText = `D-${primary.diff}`;
+            else badgeText = `D+${Math.abs(primary.diff)}`;
+
+            if (topDDayBadge) topDDayBadge.textContent = badgeText;
+            if (topDDayTitle) topDDayTitle.textContent = `${primary.title} (${primary.date})`;
+
+            sorted.forEach(item => {
+                let badgeBg = '#D9728D';
+                let label = '';
+                if (item.diff === 0) label = 'D-DAY';
+                else if (item.diff > 0) label = `D-${item.diff}`;
+                else {
+                    label = `D+${Math.abs(item.diff)}`;
+                    badgeBg = '#A0AEC0';
+                }
+
+                const card = document.createElement('div');
+                card.style.cssText = "background:#FFF0F4; padding:8px 10px; border-radius:12px; border:1px solid #E8A5B8; display:flex; align-items:center; justify-content:space-between; font-size:12px;";
+                card.innerHTML = `
+                    <div style="display:flex; align-items:center; gap:8px; font-weight:bold; color:#5C3D2E;">
+                        <span style="background:${badgeBg}; color:#FFFFFF; padding:2px 8px; border-radius:10px; font-size:10px;">${label}</span>
+                        <div style="display:flex; flex-direction:column;">
+                            <span>${item.title}</span>
+                            <span style="font-size:9px; color:#8C6849; font-weight:normal;">${item.date}</span>
+                        </div>
+                    </div>
+                    <div style="display:flex; align-items:center; gap:2px;">
+                        <button class="edit-dday-btn" style="background:none; border:none; cursor:pointer; font-size:12px; padding:2px;" title="수정">✏️</button>
+                        <button class="delete-dday-btn" style="background:none; border:none; color:#A0AEC0; cursor:pointer; font-size:12px; padding:2px;" title="삭제">✕</button>
+                    </div>
+                `;
+
+                card.querySelector('.edit-dday-btn').onclick = () => openEditDDayModal(item);
+                card.querySelector('.delete-dday-btn').onclick = () => deleteDDayItem(item.id);
+                ddayList.appendChild(card);
+            });
+        }
+
+        async function addNewEvent(eventData) {
+            if (db && currentUser && firestoreModules.addDoc) {
+                try {
+                    const eventsCol = firestoreModules.collection(db, 'artifacts', appId, 'public', 'data', 'events');
+                    await firestoreModules.addDoc(eventsCol, { ...eventData, createdAt: Date.now() });
+                    return;
+                } catch(e) {}
+            }
+            eventsData.push({ id: Date.now().toString(), ...eventData });
+            saveLocalStorageData();
+            renderCalendar();
+        }
+
+        async function updateEventItem(id, updatedFields) {
+            if (db && currentUser && firestoreModules.updateDoc) {
+                try {
+                    const eventRef = firestoreModules.doc(db, 'artifacts', appId, 'public', 'data', 'events', id);
+                    await firestoreModules.updateDoc(eventRef, updatedFields);
+                    return;
+                } catch(e) {}
+            }
+            const idx = eventsData.findIndex(e => e.id === id);
+            if (idx !== -1) {
+                eventsData[idx] = { ...eventsData[idx], ...updatedFields };
+                saveLocalStorageData();
+                renderCalendar();
+            }
+        }
+
+        async function deleteEventItem(id) {
+            if (db && currentUser && firestoreModules.deleteDoc) {
+                try {
+                    const eventRef = firestoreModules.doc(db, 'artifacts', appId, 'public', 'data', 'events', id);
+                    await firestoreModules.deleteDoc(eventRef);
+                    return;
+                } catch(e) {}
+            }
+            eventsData = eventsData.filter(e => e.id !== id);
+            saveLocalStorageData();
+            renderCalendar();
+        }
+
+        async function addNewMemo(text) {
+            if (db && currentUser && firestoreModules.addDoc) {
+                try {
+                    const memosCol = firestoreModules.collection(db, 'artifacts', appId, 'public', 'data', 'memos');
+                    await firestoreModules.addDoc(memosCol, { text, createdAt: Date.now() });
+                    return;
+                } catch(e) {}
+            }
+            memosData.unshift({ id: Date.now().toString(), text });
+            saveLocalStorageData();
+            renderMemos();
+        }
+
+        async function updateMemoItem(id, text) {
+            if (db && currentUser && firestoreModules.updateDoc) {
+                try {
+                    const memoRef = firestoreModules.doc(db, 'artifacts', appId, 'public', 'data', 'memos', id);
+                    await firestoreModules.updateDoc(memoRef, { text });
+                    return;
+                } catch(e) {}
+            }
+            const idx = memosData.findIndex(m => m.id === id);
+            if (idx !== -1) {
+                memosData[idx].text = text;
+                saveLocalStorageData();
+                renderMemos();
+            }
+        }
+
+        async function deleteMemoItem(id) {
+            if (db && currentUser && firestoreModules.deleteDoc) {
+                try {
+                    const memoRef = firestoreModules.doc(db, 'artifacts', appId, 'public', 'data', 'memos', id);
+                    await firestoreModules.deleteDoc(memoRef);
+                    return;
+                } catch(e) {}
+            }
+            memosData = memosData.filter(m => m.id !== id);
+            saveLocalStorageData();
+            renderMemos();
+        }
+
+        async function addNewDDay(title, date) {
+            if (db && currentUser && firestoreModules.addDoc) {
+                try {
+                    const ddaysCol = firestoreModules.collection(db, 'artifacts', appId, 'public', 'data', 'ddays');
+                    await firestoreModules.addDoc(ddaysCol, { title, date, createdAt: Date.now() });
+                    return;
+                } catch(e) {}
+            }
+            ddaysData.push({ id: Date.now().toString(), title, date });
+            saveLocalStorageData();
+            renderDDays();
+        }
+
+        async function updateDDayItem(id, title, date) {
+            if (db && currentUser && firestoreModules.updateDoc) {
+                try {
+                    const ddayRef = firestoreModules.doc(db, 'artifacts', appId, 'public', 'data', 'ddays', id);
+                    await firestoreModules.updateDoc(ddayRef, { title, date });
+                    return;
+                } catch(e) {}
+            }
+            const idx = ddaysData.findIndex(d => d.id === id);
+            if (idx !== -1) {
+                ddaysData[idx] = { ...ddaysData[idx], title, date };
+                saveLocalStorageData();
+                renderDDays();
+            }
+        }
+
+        async function deleteDDayItem(id) {
+            if (db && currentUser && firestoreModules.deleteDoc) {
+                try {
+                    const ddayRef = firestoreModules.doc(db, 'artifacts', appId, 'public', 'data', 'ddays', id);
+                    await firestoreModules.deleteDoc(ddayRef);
+                    return;
+                } catch(e) {}
+            }
+            ddaysData = ddaysData.filter(d => d.id !== id);
+            saveLocalStorageData();
+            renderDDays();
+        }
+
+        function resetEventForm() {
+            editingEventId = null;
+            if (eventTitleInput) eventTitleInput.value = '';
+            if (eventCategoryInput) eventCategoryInput.value = '수행평가';
+            if (eventFormHeader) eventFormHeader.textContent = "+ 새 일정 추가하기";
+            if (saveEventSubmitBtn) saveEventSubmitBtn.textContent = "저장하기";
+        }
+
+        function openEventModal(dateStr) {
+            selectedDateStr = dateStr;
+            if (modalDateBadge) modalDateBadge.textContent = dateStr;
+            resetEventForm();
+            renderDayEventsList(dateStr);
+            if (eventModal) eventModal.classList.remove('hidden');
+        }
+
+        function openEditEventForm(ev) {
+            editingEventId = ev.id;
+            if (eventTitleInput) eventTitleInput.value = ev.title;
+            if (eventCategoryInput) eventCategoryInput.value = ev.category;
+            if (eventFormHeader) eventFormHeader.textContent = "✏️ 일정 수정하기";
+            if (saveEventSubmitBtn) saveEventSubmitBtn.textContent = "수정 완료";
+        }
+
+        function openEditMemoModal(memo) {
+            editingMemoId = memo.id;
+            if (memoModalTitle) memoModalTitle.textContent = "✏️ 준비물/공지 수정하기";
+            if (saveMemoSubmitBtn) saveMemoSubmitBtn.textContent = "수정 완료";
+            if (memoTextInput) memoTextInput.value = memo.text;
+            if (memoModal) memoModal.classList.remove('hidden');
+        }
+
+        function openEditDDayModal(dday) {
+            editingDDayId = dday.id;
+            if (ddayModalTitle) ddayModalTitle.textContent = "✏️ D-Day 수정하기";
+            if (saveDDaySubmitBtn) saveDDaySubmitBtn.textContent = "수정 완료";
+            if (ddayTitleInput) ddayTitleInput.value = dday.title;
+            if (ddayDateInput) ddayDateInput.value = dday.date;
+            if (ddayModal) ddayModal.classList.remove('hidden');
+        }
+
+        function renderDayEventsList(dateStr) {
+            dayEventsList = document.getElementById('dayEventsList');
+            if (!dayEventsList) return;
+            const dayEvents = (Array.isArray(eventsData) ? eventsData : []).filter(e => e && e.date === dateStr);
+
+            dayEventsList.innerHTML = '';
+            if (dayEvents.length === 0) {
+                dayEventsList.innerHTML = `<p style="font-size:11px; color:#8C6849; text-align:center; padding:10px;">등록된 일정이 없습니다.</p>`;
+                return;
+            }
+
+            dayEvents.forEach(ev => {
+                const style = getCategoryStyle(ev.category);
+                const item = document.createElement('div');
+                item.style.cssText = "background:#FFFFFF; padding:6px 8px; border-radius:8px; border:1px solid #E8A5B8; display:flex; align-items:center; justify-content:space-between; font-size:11px;";
+                item.innerHTML = `
+                    <div style="display:flex; align-items:center; gap:6px; font-weight:bold; color:#5C3D2E;">
+                        <span style="padding:2px 6px; border-radius:6px; background:${style.bg}; color:${style.text}; border:1px solid ${style.border}; font-size:10px;">
+                            ${style.icon} ${ev.category}
+                        </span>
+                        <span>${ev.title}</span>
+                    </div>
+                    <div style="display:flex; align-items:center; gap:2px;">
+                        <button class="edit-day-event-btn" style="background:none; border:none; cursor:pointer; font-size:12px; padding:2px;" title="수정">✏️</button>
+                        <button class="delete-day-event-btn" style="background:none; border:none; color:#A0AEC0; cursor:pointer; font-size:12px; padding:2px;" title="삭제">🗑️</button>
+                    </div>
+                `;
+
+                item.querySelector('.edit-day-event-btn').onclick = () => openEditEventForm(ev);
+                item.querySelector('.delete-day-event-btn').onclick = async () => {
+                    await deleteEventItem(ev.id);
+                    renderDayEventsList(dateStr);
+                };
+
+                dayEventsList.appendChild(item);
+            });
+        }
+
+        async function initCloudSyncDynamic() {
+            if (!firebaseConfig) return;
+
+            try {
+                const { initializeApp } = await import("https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js");
+                const { getAuth, signInAnonymously, signInWithCustomToken } = await import("https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js");
+                const firestore = await import("https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js");
+
+                firestoreModules = firestore;
+
+                const app = initializeApp(firebaseConfig);
+                auth = getAuth(app);
+                db = firestore.getFirestore(app);
+
+                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                    const res = await signInWithCustomToken(auth, __initial_auth_token);
+                    currentUser = res.user;
+                } else {
+                    const res = await signInAnonymously(auth);
+                    currentUser = res.user;
+                }
+
+                if (currentUser) {
+                    subscribeRealtimeData();
+                }
+            } catch (err) {
+                console.warn("Operating in standalone storage mode.", err);
+            }
+        }
+
+        function subscribeRealtimeData() {
+            if (!db || !currentUser || !firestoreModules.onSnapshot) return;
+
+            try {
+                const eventsCol = firestoreModules.collection(db, 'artifacts', appId, 'public', 'data', 'events');
+                firestoreModules.onSnapshot(eventsCol, (snapshot) => {
+                    eventsData = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+                    renderCalendar();
+                });
+
+                const memosCol = firestoreModules.collection(db, 'artifacts', appId, 'public', 'data', 'memos');
+                firestoreModules.onSnapshot(memosCol, (snapshot) => {
+                    memosData = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+                    memosData.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+                    renderMemos();
+                });
+
+                const ddaysCol = firestoreModules.collection(db, 'artifacts', appId, 'public', 'data', 'ddays');
+                firestoreModules.onSnapshot(ddaysCol, (snapshot) => {
+                    ddaysData = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+                    renderDDays();
+                });
+            } catch(e) {}
+        }
+
+        function startApp() {
+            initDOMElements();
+            bindEvents();
+            loadLocalStorageData();
+            renderAll();
+            initCloudSyncDynamic();
+        }
+
+        if (document.readyState === 'complete' || document.readyState === 'interactive') {
+            startApp();
+        } else {
+            document.addEventListener('DOMContentLoaded', startApp);
+            window.addEventListener('load', startApp);
+        }
+    </script>
+</body>
+</html>
